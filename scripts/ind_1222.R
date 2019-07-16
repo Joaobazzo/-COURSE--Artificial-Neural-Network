@@ -1,0 +1,32 @@
+#
+# organiza dados
+#
+require(stringr)
+setwd("/Users/João Pedro/Dropbox/PPGEA/2 TRIM/REDES NEURAIS/artigo/")
+lista_ind <- list.files(path=paste0("raw/SIG/"),pattern = "*.csv")
+ind <- read.csv(paste0("raw/SIG/",lista_ind[5]))
+View(ind)
+#
+#
+mydata <- data.frame(ind$Country.or.Area.Name,
+                     ind$X2000,ind$X2001,ind$X2002,ind$X2003,
+                     ind$X2004,ind$X2005,ind$X2006,ind$X2007,
+                     ind$X2008,ind$X2009,ind$X2010)
+mydata[is.na(mydata)] <- -999
+colnames(mydata) <- c("pais",2000:2010)
+countries <- mydata$pais[duplicated(mydata$pais)==F]
+totalf <- data.frame("pais"=c(),"ind"=c())
+for(c in (1:length(countries))){
+  total <- mydata[which(mydata$pais==countries[c]),]
+  total1 <- total[1,]
+  for(a in (dim(total1)[2]:2)){
+    if(total1[a]==""){total1[a] <- -999}
+    if(as.numeric(total1[a])>0){
+      total2 <- data.frame(total1[1],total1[a])
+      colnames(total2) <- c("pais","ind")
+      break}}
+  totalf <- rbind(totalf,total2)
+}
+View(totalf)
+
+output <- write.csv(totalf,"cut/12.2.2.csv",row.names = F)
